@@ -5,7 +5,8 @@ import re
 import random
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "secret_key")
+# SECRET_KEY artık Render secrets üzerinden alınıyor
+app.secret_key = os.environ.get("SECRET_KEY", "fallback_secret_key")
 
 pages = {
     "home": {"title": "Home"},
@@ -62,9 +63,13 @@ def contact():
             return redirect('/contact')
 
         try:
+            # Render secrets üzerinden alınan bilgiler
             sender_email = os.environ.get("SENDER_EMAIL")
             receiver_email = os.environ.get("RECEIVER_EMAIL")
             password = os.environ.get("SENDER_PASSWORD")
+
+            if not sender_email or not receiver_email or not password:
+                raise ValueError("Email credentials not set in environment variables!")
 
             body = f"Name: {name}\nEmail: {email}\nMessage:\n{message}"
 
@@ -77,8 +82,10 @@ def contact():
                 )
 
             flash("Message sent successfully!", "success")
+            print("Message sent successfully!")  # Render loglarda görünür
         except Exception as e:
             flash(f"Error sending email: {e}", "error")
+            print("Error sending email:", e)
 
         return redirect('/contact')
 
@@ -111,6 +118,9 @@ def contact_ajax():
         receiver_email = os.environ.get("RECEIVER_EMAIL")
         password = os.environ.get("SENDER_PASSWORD")
 
+        if not sender_email or not receiver_email or not password:
+            raise ValueError("Email credentials not set in environment variables!")
+
         body = f"Name: {name}\nEmail: {email}\nMessage:\n{message}"
 
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
@@ -120,8 +130,10 @@ def contact_ajax():
                 to_addrs=receiver_email,
                 msg=f"Subject: Contact Form Message\nFrom: {email}\n\n{body}"
             )
+        print("AJAX message sent successfully!")  # Render log
         return jsonify({"status":"success","message":"Message sent successfully!"})
     except Exception as e:
+        print("AJAX email error:", e)
         return jsonify({"status":"error","message":f"Error sending email: {e}"})
 
 @app.route("/codes")
@@ -141,6 +153,7 @@ def view_code(filename):
     else:
         return "File not found", 404
 
+# Production-ready deploy için Gunicorn önerilir
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
