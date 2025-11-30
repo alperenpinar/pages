@@ -1,13 +1,16 @@
-from flask import Flask, render_template, send_from_directory, request, redirect, flash, jsonify
+from flask import Flask, render_template, request, redirect, flash, jsonify
 import os
 import smtplib
 import re
 import random
+from dotenv import load_dotenv
+
+# .env dosyasını local test için yükle
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = "secret_key"
+app.secret_key = os.environ.get("SECRET_KEY", "secret_key")
 
-# Navbar için sayfalar
 pages = {
     "home": {"title": "Home"},
     "about": {"title": "About"},
@@ -18,38 +21,31 @@ pages = {
     "codes": {"title": "Codes"},
 }
 
-# Email doğrulama fonksiyonu
 def is_valid_email(email):
     pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
     return re.match(pattern, email)
 
-# Ana sayfa
 @app.route("/")
 @app.route("/home")
 def home():
     return render_template("home.html", pages=pages)
 
-# About
 @app.route("/about")
 def about():
     return render_template("about.html", pages=pages)
 
-# Research
 @app.route("/research")
 def research():
     return render_template("research.html", pages=pages)
 
-# Projects
 @app.route("/projects")
 def projects():
     return render_template("projects.html", pages=pages)
 
-# Publications
 @app.route("/publications")
 def publications():
     return render_template("publications.html", pages=pages)
 
-# Contact
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
     if request.method == 'POST':
@@ -62,19 +58,17 @@ def contact():
         if not message.strip():
             flash("Message alanı boş olamaz!", "error")
             return redirect('/contact')
-
         if not is_valid_email(email):
             flash("Geçersiz e-posta adresi!", "error")
             return redirect('/contact')
-
         if captcha != str(captcha_answer):
             flash("Captcha yanlış!", "error")
             return redirect('/contact')
 
         try:
-            sender_email = "5399401052a@gmail.com"      # Kendi Gmail
-            receiver_email = "5399401052a@gmail.com"    # Kendine gelen mail
-            password = "frjz xvoh wgga nzfe"           # Gmail App Password
+            sender_email = os.environ.get("SENDER_EMAIL")
+            receiver_email = os.environ.get("RECEIVER_EMAIL")
+            password = os.environ.get("SENDER_PASSWORD")
 
             body = f"Name: {name}\nEmail: {email}\nMessage:\n{message}"
 
@@ -93,7 +87,6 @@ def contact():
         return redirect('/contact')
 
     else:
-        # GET isteği → CAPTCHA üret
         num1 = random.randint(1, 10)
         num2 = random.randint(1, 10)
         captcha_answer = num1 + num2
@@ -101,7 +94,6 @@ def contact():
         return render_template('contact.html', pages=pages,
                                captcha_question=captcha_question,
                                captcha_answer=captcha_answer)
-
 
 @app.route('/contact-ajax', methods=['POST'])
 def contact_ajax():
@@ -119,9 +111,9 @@ def contact_ajax():
         return jsonify({"status":"error","message":"Captcha yanlış!"})
 
     try:
-        sender_email = "5399401052a@gmail.com"
-        receiver_email = "5399401052a@gmail.com"
-        password = "frjz xvoh wgga nzfe"
+        sender_email = os.environ.get("SENDER_EMAIL")
+        receiver_email = os.environ.get("RECEIVER_EMAIL")
+        password = os.environ.get("SENDER_PASSWORD")
 
         body = f"Name: {name}\nEmail: {email}\nMessage:\n{message}"
 
@@ -135,15 +127,13 @@ def contact_ajax():
         return jsonify({"status":"success","message":"Message sent successfully!"})
     except Exception as e:
         return jsonify({"status":"error","message":f"Error sending email: {e}"})
-    
-# Codes
+
 @app.route("/codes")
 def codes():
     code_folder = os.path.join(app.root_path, "static", "codes")
     codes_list = os.listdir(code_folder) if os.path.exists(code_folder) else []
     return render_template("codes.html", codes=codes_list, pages=pages)
 
-# View specific code file
 @app.route("/codes/<filename>")
 def view_code(filename):
     code_folder = os.path.join(app.root_path, "static", "codes")
@@ -154,8 +144,7 @@ def view_code(filename):
         return render_template("view_code.html", code=code_content, filename=filename, pages=pages)
     else:
         return "File not found", 404
-    
+
 if __name__ == "__main__":
-    # Render otomatik portu sağlar, host='0.0.0.0' olmalı
-    port = int(os.environ.get("PORT", 10000))
+    port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
