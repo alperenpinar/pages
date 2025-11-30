@@ -1,11 +1,15 @@
-from flask import Flask, render_template, send_from_directory, request, redirect, flash, jsonify
+from flask import Flask, render_template, request, redirect, flash, jsonify
 import os
 import smtplib
 import re
 import random
+from dotenv import load_dotenv
+
+# .env dosyasını yükle
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = "secret_key"
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "default_secret_key")
 
 # Navbar için sayfalar
 pages = {
@@ -72,9 +76,10 @@ def contact():
             return redirect('/contact')
 
         try:
-            sender_email = "5399401052a@gmail.com"      # Kendi Gmail
-            receiver_email = "5399401052a@gmail.com"    # Kendine gelen mail
-            password = "frjz xvoh wgga nzfe"           # Gmail App Password
+            # .env’den gizli bilgileri al
+            sender_email = os.environ.get("SENDER_EMAIL")
+            password = os.environ.get("EMAIL_PASSWORD")
+            receiver_email = os.environ.get("RECEIVER_EMAIL")
 
             body = f"Name: {name}\nEmail: {email}\nMessage:\n{message}"
 
@@ -102,7 +107,7 @@ def contact():
                                captcha_question=captcha_question,
                                captcha_answer=captcha_answer)
 
-
+# AJAX ile contact
 @app.route('/contact-ajax', methods=['POST'])
 def contact_ajax():
     name = request.form.get('name')
@@ -119,9 +124,9 @@ def contact_ajax():
         return jsonify({"status":"error","message":"Captcha yanlış!"})
 
     try:
-        sender_email = "5399401052a@gmail.com"
-        receiver_email = "5399401052a@gmail.com"
-        password = "frjz xvoh wgga nzfe"
+        sender_email = os.environ.get("SENDER_EMAIL")
+        password = os.environ.get("EMAIL_PASSWORD")
+        receiver_email = os.environ.get("RECEIVER_EMAIL")
 
         body = f"Name: {name}\nEmail: {email}\nMessage:\n{message}"
 
@@ -135,7 +140,7 @@ def contact_ajax():
         return jsonify({"status":"success","message":"Message sent successfully!"})
     except Exception as e:
         return jsonify({"status":"error","message":f"Error sending email: {e}"})
-    
+
 # Codes
 @app.route("/codes")
 def codes():
@@ -154,8 +159,7 @@ def view_code(filename):
         return render_template("view_code.html", code=code_content, filename=filename, pages=pages)
     else:
         return "File not found", 404
-    
+
 if __name__ == "__main__":
-    # Render otomatik portu sağlar, host='0.0.0.0' olmalı
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port, debug=True)
