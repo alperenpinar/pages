@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact{% endblock %}
+
+{% block content %}
+<h2 class="text-3xl font-bold mb-6 text-gray-800 text-center">Contact</h2>
+
+<div class="grid md:grid-cols-2 gap-8">
+
+    <!-- Form Kartı -->
+    <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition">
+        <form id="contactForm" class="space-y-4">
+            <div>
+                <label class="block font-semibold">Name *</label>
+                <input type="text" name="name" required class="w-full p-2 border rounded" placeholder="Your name">
+            </div>
+
+            <div>
+                <label class="block font-semibold">Email *</label>
+                <input type="email" name="email" required class="w-full p-2 border rounded" placeholder="email@example.com">
+            </div>
+
+            <div>
+                <label class="block font-semibold">Message *</label>
+                <textarea name="message" required class="w-full p-2 border rounded h-32" placeholder="Write your message"></textarea>
+            </div>
+
+            <div>
+                <label class="block font-semibold">Please enter the code: {{ captcha_question }} *</label>
+                <input type="text" name="captcha" required class="w-full p-2 border rounded" placeholder="Answer">
+                <input type="hidden" name="captcha_answer" value="{{ captcha_answer }}">
+            </div>
+
+            <button type="submit" class="bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-800 transition">
+                Send Message
+            </button>
+        </form>
+
+        <!-- Popup mesaj (üst sağ) -->
+        <div id="popupMessage" class="hidden fixed top-5 right-5 p-4 rounded shadow-lg z-50"></div>
+    </div>
+
+    <!-- Harita Kartı -->
+    <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition">
+        <h3 class="text-xl font-semibold mb-4 text-purple-700">38.415, 27.128</h3>
+        <div id="map" class="w-full h-96 rounded"></div>
+    </div>
+
+</div>
+
+<!-- Leaflet CSS & JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    // Leaflet Harita
+    var defaultLatLng = [38.415, 27.128]; // İzmir Buca
+    var map = L.map('map').setView(defaultLatLng, 14);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    var marker = L.marker(defaultLatLng).addTo(map)
+        .bindPopup("Buca, İzmir").openPopup();
+
+    map.locate({setView: true, maxZoom: 16});
+    map.on('locationfound', function(e){
+        map.removeLayer(marker);
+        L.marker(e.latlng).addTo(map).bindPopup("You are here").openPopup();
+        L.circle(e.latlng, e.accuracy/2).addTo(map);
+    });
+    map.on('locationerror', function(e){ console.log("Konum alınamadı: "+e.message); });
+
+    // Ajax ile form gönderimi
+    const form = document.getElementById('contactForm');
+    const popup = document.getElementById('popupMessage');
+
+    form.addEventListener('submit', function(e){
+        e.preventDefault();
+        const formData = new FormData(form);
+
+        fetch("/contact-ajax", {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            popup.textContent = data.message;
+            popup.className = "fixed top-5 right-5 p-4 rounded shadow-lg z-50 " + (data.status === "success" ? "bg-green-600" : "bg-red-600");
+            popup.classList.remove("hidden");
+            setTimeout(() => popup.classList.add("hidden"), 4000);
+            if(data.status === "success") form.reset();
+        })
+        .catch(err => {
+            popup.textContent = "Error sending message!";
+            popup.className = "fixed top-5 right-5 p-4 rounded shadow-lg z-50 bg-red-600";
+            popup.classList.remove("hidden");
+            setTimeout(() => popup.classList.add("hidden"), 4000);
+        });
+    });
+</script>
+{% endblock %}

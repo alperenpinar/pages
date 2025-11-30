@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}View Code{% endblock %}
+
+{% block content %}
+<h2 class="text-2xl font-bold mb-4 text-gray-800">{{ filename }}</h2>
+<pre class="rounded-2xl p-4 bg-gray-100 overflow-x-auto shadow-inner">
+<code class="language-python">{{ code }}</code>
+</pre>
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.js"></script>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Projects{% endblock %}
+
+{% block content %}
+<h2 class="text-3xl font-bold mb-6 text-gray-800 text-center">Projects</h2>
+
+<div class="grid md:grid-cols-2 gap-6">
+    <div class="p-6 bg-white rounded-2xl shadow hover:shadow-lg transition">
+        <h3 class="text-xl font-semibold mb-2 text-purple-700">Title of Study (2025)</h3>
+        <a href='https://example.com/journal1.pdf' target='_blank' class='text-purple-600 underline hover:text-purple-800'>Open PDF</a>
+    </div>
+
+    <div class="p-6 bg-white rounded-2xl shadow hover:shadow-lg transition">
+        <h3 class="text-xl font-semibold mb-2 text-purple-700">Conference Paper (2024)</h3>
+        <a href='https://example.com/conference.pdf' target='_blank' class='text-purple-600 underline hover:text-purple-800'>Open PDF</a>
+    </div>
+</div>
+{% endblock %}

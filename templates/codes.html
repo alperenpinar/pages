@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Codes{% endblock %}
+
+{% block content %}
+<h2 class="text-3xl font-bold mb-6 text-gray-800 text-center">Course Codes</h2>
+
+<div class="grid md:grid-cols-2 gap-6">
+{% for file in codes %}
+    <div class="p-6 bg-white rounded-2xl shadow hover:shadow-lg transition">
+        <h3 class="text-lg font-semibold mb-2 text-purple-700">{{ file }}</h3>
+        <a href="/codes/{{ file }}" target="_blank" class="text-purple-600 underline hover:text-purple-800">View Code</a>
+    </div>
+{% endfor %}
+</div>
+{% endblock %}

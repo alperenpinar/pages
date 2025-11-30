@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<h2 class="text-3xl font-bold mb-6 text-gray-800 text-center">Welcome to Pages</h2>
+
+<!-- Preface -->
+<section class="mb-8">
+    <h3 class="text-2xl font-semibold text-purple-700 mb-2">Preface</h3>
+    <p class="text-gray-700 mb-2">
+        This website was created to share knowledge with colleagues and anyone interested. It features my lecture notes, ongoing projects, and software I have developed. The site will continue to grow and evolve over time, both in content and functionality.
+    </p>
+    <hr class="border-gray-300 mt-4">
+</section>
+
+<!-- Sitemap -->
+<section class="mb-8">
+    <h3 class="text-2xl font-semibold text-purple-700 mb-2">Sitemap</h3>
+    <ul class="list-disc pl-6 text-gray-700 space-y-1">
+        <li>Geodesy (<a href="/geodesy" class="text-blue-600 hover:underline">link</a>)</li>
+        <li>Astronomy (<a href="/astronomy" class="text-blue-600 hover:underline">link</a>)</li>
+        <li>Some Useful Webs (<a href="/useful-webs" class="text-blue-600 hover:underline">link</a>)</li>
+        <li>Auxiliary Resources for Geodesy and Astronomy (<a href="/auxiliary-resources" class="text-blue-600 hover:underline">link</a>)</li>
+    </ul>
+    <hr class="border-gray-300 mt-4">
+</section>
+
+<!-- Geodesy -->
+<section class="mb-8">
+    <h3 class="text-2xl font-semibold text-purple-700 mb-2">Geodesy</h3>
+    <ul class="list-disc pl-6 text-gray-700 space-y-1">
+        <li>Terrestrial Reference Frame (27 Oct 2024 from GGOS) (<a href="/geodesy/terrestrial" class="text-blue-600 hover:underline">link</a>)</li>
+        <li>Discover GGOS and Geodesy (16 Oct 2022 from GGOS) (<a href="/geodesy/discover" class="text-blue-600 hover:underline">link</a>)</li>
+        <li>What is the Geodesy? (08 Sep 2020 from NASA web) (<a href="/geodesy/what" class="text-blue-600 hover:underline">link</a>)</li>
+        <li>NASA: A Brief History of VLBI (08 Sep 2020) (<a href="/geodesy/vlbi" class="text-blue-600 hover:underline">link</a>)</li>
+        <li>NASA: Space Geodesy Project (SPG) of NASA (08 Sep 2020) (<a href="/geodesy/spg" class="text-blue-600 hover:underline">link</a>)</li>
+        <li>Map Projections (21 Jan 2022) (<a href="/geodesy/map-projections" class="text-blue-600 hover:underline">link</a>)</li>
+        <li>NOAA: What are Geodetic Datums? (31 Jan 2022) (<a href="/geodesy/noaa-datums" class="text-blue-600 hover:underline">link</a>)</li>
+        <li>NOAA: Precision and Accuracy in Geodetic Survey (31 Jan 2022) (<a href="/geodesy/noaa-accuracy" class="text-blue-600 hover:underline">link</a>)</li>
+    </ul>
+    <hr class="border-gray-300 mt-4">
+</section>
+
+<!-- Astronomy -->
+<section class="mb-8">
+    <h3 class="text-2xl font-semibold text-purple-700 mb-2">Astronomy</h3>
+    <ul class="list-disc pl-6 text-gray-700 space-y-1">
+        <li>DAG, Eastern Anatolian Observatory, Erzurum (28 Oct 2025) (<a href="/astronomy/dag" class="text-blue-600 hover:underline">link</a>)</li>
+        <li>TUG, TUG Campus, Antalya (28 Oct 2025) (<a href="/astronomy/tug" class="text-blue-600 hover:underline">link</a>)</li>
+        <li>UZBİMER, Space Science Center, Kayseri (28 Oct 2025) (<a href="/astronomy/uzbimer" class="text-blue-600 hover:underline">link</a>)</li>
+        <li>CAAM, Ulupınar Observatory, Çanakkale (28 Oct 2025) (<a href="/astronomy/caam" class="text-blue-600 hover:underline">link</a>)</li>
+    </ul>
+    <hr class="border-gray-300 mt-4">
+</section>
+
+<!-- Useful Webs -->
+<section class="mb-8">
+    <h3 class="text-2xl font-semibold text-purple-700 mb-2">Some Useful Webs</h3>
+    <ul class="list-disc pl-6 text-gray-700 space-y-1">
+        <li>Amateur Astronomy (Uğur İkizler) (06 Jan 2025) (<a href="/useful-webs/amateur" class="text-blue-600 hover:underline">link</a>)</li>
+        <li>Astro Bilgi (06 Jan 2025) (<a href="/useful-webs/astro-bilgi" class="text-blue-600 hover:underline">link</a>)</li>
+        <li>PixInsight (06 Jan 2025) (<a href="/useful-webs/pixinsight" class="text-blue-600 hover:underline">link</a>)</li>
+        <li>Astrophysics Data System (06 Jan 2025) (<a href="/useful-webs/ads" class="text-blue-600 hover:underline">link</a>)</li>
+    </ul>
+    <hr class="border-gray-300 mt-4">
+</section>
+
+<!-- Auxiliary Resources -->
+<section class="mb-8">
+    <h3 class="text-2xl font-semibold text-purple-700 mb-2">Auxiliary Resources</h3>
+    <ul class="list-disc pl-6 text-gray-700 space-y-1">
+        <li>SOFA: Standards of Fundamental Astronomy (12 Oct 2025) (<a href="/auxiliary-resources/sofa" class="text-blue-600 hover:underline">link</a>)</li>
+        <li>NOVAS: Naval Observatory Vector Astrometry Software (12 Oct 2025) (<a href="/auxiliary-resources/novas" class="text-blue-600 hover:underline">link</a>)</li>
+        <li>IERS: Earth Rotation and References Systems Service (12 Oct 2025) (<a href="/auxiliary-resources/iers" class="text-blue-600 hover:underline">link</a>)</li>
+        <li>IGS, IVS, IDS, ILRS, Atmosphere Monitoring Service, GLONASS-IAC (12 Oct 2025) (<a href="/auxiliary-resources/misc" class="text-blue-600 hover:underline">link</a>)</li>
+    </ul>
+    <hr class="border-gray-300 mt-4">
+</section>
+
+{% endblock %}

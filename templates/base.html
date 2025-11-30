@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Alperen Pınar{% endblock %}</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    #hero-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 0;
+    }
+    .hero-content {
+        position: relative;
+        z-index: 10;
+    }
+</style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+<!-- HEADER / HERO -->
+<header class="relative overflow-hidden bg-white">
+    <!-- Canvas for interactive particles -->
+    <canvas id="hero-canvas"></canvas>
+
+    <div class="hero-content max-w-5xl mx-auto py-32 px-6 text-center">
+        <h1 class="text-5xl md:text-6xl font-extrabold mb-4 text-gray-900">Alperen Pınar</h1>
+        <p class="text-lg md:text-xl mb-6 text-gray-700">Academic Researcher</p>
+        <div class="space-x-4">
+            <a href="/about" class="inline-block px-6 py-3 bg-yellow-300 text-gray-900 font-semibold rounded-lg shadow hover:bg-yellow-200 transition">
+                About Me <i class="fas fa-user ms-2"></i>
+            </a>
+            <a href="/projects" class="inline-block px-6 py-3 bg-purple-400 text-white font-semibold rounded-lg shadow hover:bg-purple-300 transition">
+                Projects <i class="fas fa-flask ms-2"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- JS – Particles + Interactive Triangles -->
+    <script>
+    const canvas = document.getElementById('hero-canvas');
+    const ctx = canvas.getContext('2d');
+    let width = window.innerWidth;
+    let height = 500;
+    canvas.width = width;
+    canvas.height = height;
+
+    let mouse = { x: null, y: null };
+    window.addEventListener('mousemove', e => { mouse.x = e.x; mouse.y = e.y; });
+    window.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
+
+    class Particle {
+        constructor() {
+            this.x = Math.random() * width;
+            this.y = Math.random() * height;
+            this.vx = (Math.random() - 0.5) * 0.7;
+            this.vy = (Math.random() - 0.5) * 0.7;
+            this.size = Math.random() * 2 + 1;
+        }
+        draw() {
+            ctx.fillStyle = 'rgba(128,0,128,0.7)';
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.fill();
+        }
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            if(this.x < 0 || this.x > width) this.vx *= -1;
+            if(this.y < 0 || this.y > height) this.vy *= -1;
+
+            if(mouse.x && mouse.y){
+                let dx = this.x - mouse.x;
+                let dy = this.y - mouse.y;
+                let dist = Math.sqrt(dx*dx + dy*dy);
+                if(dist < 100){
+                    this.x += dx/20;
+                    this.y += dy/20;
+                }
+            }
+        }
+    }
+
+    let particles = [];
+    let numParticles = 100;
+    for(let i=0; i<numParticles; i++) particles.push(new Particle());
+
+    function connect() {
+        for(let a=0; a<particles.length; a++){
+            for(let b=a; b<particles.length; b++){
+                let dx = particles[a].x - particles[b].x;
+                let dy = particles[a].y - particles[b].y;
+                let dist = Math.sqrt(dx*dx + dy*dy);
+                if(dist < 120){
+                    ctx.strokeStyle = `rgba(128,0,128,${1 - dist/120})`;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(particles[a].x, particles[a].y);
+                    ctx.lineTo(particles[b].x, particles[b].y);
+                    ctx.stroke();
+                }
+            }
+        }
+    }
+
+    function animate(){
+        ctx.clearRect(0,0,width,height);
+        particles.forEach(p => { p.update(); p.draw(); });
+        connect();
+        requestAnimationFrame(animate);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+        width = window.innerWidth;
+        canvas.width = width;
+        canvas.height = height;
+    });
+    </script>
+</header>
+
+<!-- NAVBAR -->
+<nav class="bg-gray-100 py-3 shadow-sm sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto flex justify-center gap-6 text-gray-800 text-lg">
+        <a href="/home" class="hover:text-purple-500 transition">Home</a>
+        <a href="/research" class="hover:text-purple-500 transition">Research</a>
+        <a href="/publications" class="hover:text-purple-500 transition">Publications</a>
+        <a href="/codes" class="hover:text-purple-500 transition">Codes</a>
+        <a href="/contact" class="hover:text-purple-500 transition">Contact</a>
+    </div>
+</nav>
+
+<!-- CONTENT -->
+<main class="max-w-5xl mx-auto p-6 mt-8">
+    {% block content %}{% endblock %}
+</main>
+
+<!-- BODY CONTENT -->
+<div class="pb-32">
+    <!-- Sayfanın diğer içerikleri buraya gelecek -->
+</div>
+
+<!-- FOOTER -->
+<footer class="bg-purple-900 text-white py-6 border-t border-purple-800 w-full mt-auto">
+    <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center px-4">
+        <p class="text-left w-full md:w-auto">&copy; 2025 Alperen Pınar. All rights reserved.</p>
+        <div class="flex gap-4 mt-3 md:mt-0 w-full md:w-auto justify-start md:justify-end">
+            <a href="https://github.com/alperenpinar" class="hover:text-blue-500 transition"><i class="fab fa-github fa-lg"></i></a>
+        </div>
+    </div>
+</footer>
+</body>
+
+
+
+
+</body>
+</html>
