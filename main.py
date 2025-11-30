@@ -3,10 +3,6 @@ import os
 import smtplib
 import re
 import random
-from dotenv import load_dotenv
-
-# .env dosyasını local test için yükle
-load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "secret_key")
