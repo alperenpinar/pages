@@ -154,6 +154,8 @@ def view_code(filename):
         return render_template("view_code.html", code=code_content, filename=filename, pages=pages)
     else:
         return "File not found", 404
-
+    
 if __name__ == "__main__":
-    app.run(debug=True)
+    # Render otomatik portu sağlar, host='0.0.0.0' olmalı
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port, debug=True)
